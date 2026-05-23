@@ -7,3 +7,7 @@ yarn-error.log*
 pnpm-debug.log*
 dist
 out
+capacitor-web
+android/.gradle
+android/app/build
+android/build

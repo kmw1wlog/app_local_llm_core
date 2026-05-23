@@ -1,0 +1,87 @@
+name: Build Debug APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      workos_app_web_url:
+        description: "HTTPS URL of deployed AI WorkOS Console web app"
+        required: false
+        default: "https://app-local-llm-core.vercel.app/"
+        type: string
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.14.3
+
+      - name: Show versions
+        run: |
+          node -v
+          npm -v
+          java -version
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Resolve WORKOS_APP_WEB_URL
+        shell: bash
+        run: |
+          if [ -n "${{ github.event.inputs.workos_app_web_url }}" ]; then
+            echo "WORKOS_APP_WEB_URL=${{ github.event.inputs.workos_app_web_url }}" >> "$GITHUB_ENV"
+          else
+            echo "WORKOS_APP_WEB_URL=https://app-local-llm-core.vercel.app/" >> "$GITHUB_ENV"
+          fi
+
+      - name: Validate URL
+        shell: bash
+        run: |
+          case "$WORKOS_APP_WEB_URL" in
+            https://*) echo "Using $WORKOS_APP_WEB_URL" ;;
+            *) echo "WORKOS_APP_WEB_URL must start with https://" && exit 1 ;;
+          esac
+
+      - name: Run remote smoke
+        run: npm run smoke:pre-apk
+
+      - name: Sync Capacitor Android
+        run: npm run cap:sync
+
+      - name: Generate Gradle wrapper
+        working-directory: android
+        run: gradle wrapper --gradle-version 8.14.3
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x android/gradlew
+
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-workos-console-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk

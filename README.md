@@ -15,6 +15,7 @@ npm run build
 
 ```bash
 npm run lint
+SMOKE_BASE_URL="https://app-local-llm-core.vercel.app" npm run smoke:pre-apk
 ```
 
 ## 사용 기술
@@ -65,6 +66,33 @@ npm run lint
 - `/internal`: 내부 운영자용 고객 상태 콘솔
 - `/gpu-partner`: Cheap Edge GPU 파트너 운영/정산 화면
 - `/investor`: 투자자/지원사업용 익명 집계 리포트
+
+## 배포 URL
+
+- Web app: `https://app-local-llm-core.vercel.app/`
+
+## Android APK / AAB
+
+이 레포에는 Capacitor Android WebView wrapper가 함께 포함되어 있습니다.
+
+주요 명령:
+
+```bash
+npm run cap:sync
+npm run android:debug-apk
+npm run android:release-aab
+```
+
+관련 문서:
+
+- `docs/APK_WEB_URL_HANDOFF.md`
+- `docs/PRE_APK_CHECKLIST.md`
+- `docs/RELEASE_AAB_RUNBOOK.md`
+
+참고:
+
+- debug APK는 GitHub Actions artifact로 받는 흐름을 기본으로 잡았습니다.
+- 이 로컬 환경에서는 Android SDK가 없어 `assembleDebug`까지는 실패했고, 실패 원인은 `sdk.dir / ANDROID_HOME 미설정`이었습니다.
 
 ## 데모 데이터
 
