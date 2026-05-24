@@ -83,6 +83,11 @@ npm run android:debug-apk
 npm run android:release-aab
 ```
 
+GitHub Actions:
+
+- `Build Debug APK`: debug APK artifact 생성
+- `Build Release AAB`: `main` 푸시 또는 수동 실행으로 서명된 release AAB artifact 생성
+
 관련 문서:
 
 - `docs/APK_WEB_URL_HANDOFF.md`

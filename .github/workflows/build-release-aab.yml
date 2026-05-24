@@ -8,10 +8,15 @@ on:
         required: false
         default: "https://app-local-llm-core.vercel.app/"
         type: string
+  push:
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - name: Checkout
@@ -20,7 +25,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
 
       - name: Set up JDK
@@ -34,6 +39,12 @@ jobs:
         with:
           gradle-version: 8.14.3
 
+      - name: Show versions
+        run: |
+          node -v
+          npm -v
+          java -version
+
       - name: Install dependencies
         run: npm ci
 
@@ -42,9 +53,19 @@ jobs:
         run: |
           if [ -n "${{ github.event.inputs.workos_app_web_url }}" ]; then
             echo "WORKOS_APP_WEB_URL=${{ github.event.inputs.workos_app_web_url }}" >> "$GITHUB_ENV"
+          elif [ -n "${{ vars.WORKOS_APP_WEB_URL }}" ]; then
+            echo "WORKOS_APP_WEB_URL=${{ vars.WORKOS_APP_WEB_URL }}" >> "$GITHUB_ENV"
           else
             echo "WORKOS_APP_WEB_URL=https://app-local-llm-core.vercel.app/" >> "$GITHUB_ENV"
           fi
+
+      - name: Validate URL
+        shell: bash
+        run: |
+          case "$WORKOS_APP_WEB_URL" in
+            https://*) echo "Using $WORKOS_APP_WEB_URL" ;;
+            *) echo "WORKOS_APP_WEB_URL must start with https://" && exit 1 ;;
+          esac
 
       - name: Validate signing secrets
         shell: bash

@@ -7,7 +7,7 @@
 - applicationId: `com.kmw1wlog.aiworkosconsole`
 - 앱 이름: `AI WorkOS`
 - WebView URL: `https://app-local-llm-core.vercel.app/`
-- Android release version: `0.1.0 (versionCode 1)`
+- Android release version: `0.1.1 (versionCode 2)`
 
 ## Debug APK와 Release AAB 차이
 
@@ -17,7 +17,7 @@
 ## AAB 생성 절차
 
 1. GitHub Actions secrets에 signing 정보를 등록합니다.
-2. `Build Release AAB` workflow를 수동 실행합니다.
+2. `main` 푸시 후 자동 실행되거나, 필요 시 `Build Release AAB` workflow를 수동 실행합니다.
 3. artifact `ai-workos-console-release-aab`를 다운로드합니다.
 4. `app-release.aab`를 Play Console closed testing에 업로드합니다.
 

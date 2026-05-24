@@ -5,8 +5,8 @@
 - app label: `AI WorkOS`
 - applicationId: `com.kmw1wlog.aiworkosconsole`
 - WebView URL: `https://app-local-llm-core.vercel.app/`
-- versionName: `0.1.0`
-- versionCode: `1`
+- versionName: `0.1.1`
+- versionCode: `2`
 
 ## Required Secrets
 
@@ -18,7 +18,7 @@
 ## Workflow
 
 1. Push wrapper changes to `main`.
-2. Run `Build Release AAB` manually.
+2. Wait for `Build Release AAB` on `main`, or run it manually with `workflow_dispatch`.
 3. Download artifact `ai-workos-console-release-aab`.
 4. Extract `android/app/build/outputs/bundle/release/app-release.aab`.
 5. Upload it to Google Play Console closed testing.
